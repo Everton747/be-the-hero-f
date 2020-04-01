@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiPower, FiTrash2 } from 'react-icons/fi';
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 import api from '../../services/api';
 import './styles.css';
@@ -15,14 +16,19 @@ export default function Profile() {
   const ongName = localStorage.getItem('ongName');
 
   const [incidents, setIncidents] = useState([]);
+  const [isLoading, setIsLoading] = useState([]);
 
   useEffect(() => {
 
+    setIsLoading(true);
     api.get('profile', {
       headers: {
         authorization: ongId,
       }
-    }).then(response => { setIncidents(response.data) });
+    }).then(response => {
+      setIsLoading(false);
+      setIncidents(response.data)
+    });
 
   }, [ongId]);
 
@@ -58,7 +64,39 @@ export default function Profile() {
       </header>
 
       <h1>Casos cadastrados</h1>
+
       <ul>
+        {
+          isLoading
+            ? (
+              <SkeletonTheme color="#fff" highlightColor="#f0f0f5">
+                <li>
+                  <strong><Skeleton width={500} height={30} /></strong>
+
+                  <strong><Skeleton width={500} height={30} /></strong>
+
+                  <strong><Skeleton width={500} height={30} /></strong>
+                </li>
+              </SkeletonTheme>
+            )
+            : null
+        }
+        {
+          isLoading
+            ? (
+              <SkeletonTheme color="#fff" highlightColor="#f0f0f5">
+                <li>
+                  <strong><Skeleton width={500} height={30} /></strong>
+
+                  <strong><Skeleton width={500} height={30} /></strong>
+
+                  <strong><Skeleton width={500} height={30} /></strong>
+                </li>
+              </SkeletonTheme>
+            )
+            : null
+        }
+
         {incidents.map(incident => (
           <li key={incident.id}>
             <strong>Caso:</strong>
@@ -76,6 +114,6 @@ export default function Profile() {
           </li>
         ))}
       </ul>
-    </div>
+    </div >
   )
 }
